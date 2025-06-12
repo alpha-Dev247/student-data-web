@@ -75,21 +75,35 @@
       }
 
       try {
-        const url = `${API_URL}?action=updateNickname&idCard=${idCard}&nickname=${nickname}`;
+const googleAppsScriptUrl = API_URL ;
 
-fetch(url)
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert('บันทึกชื่อเล่นเรียบร้อย');
-    } else {
-      alert('เกิดข้อผิดพลาด: ' + (data.error || ''));
+async function saveFormData() {
+    const idCard = document.getElementById("idCard").value;
+    const nickname = document.getElementById("nickname").value;
+    const studentCode = document.getElementById("studentCode").value;
+
+    const urlEncodedData = new URLSearchParams();
+    urlEncodedData.append("idCard", idCard);
+    urlEncodedData.append("nickname", nickname);
+    urlEncodedData.append("studentCode", studentCode);
+
+    try {
+        await fetch(googleAppsScriptUrl, {
+            method: 'POST',
+            mode: 'no-cors', // CORS-safe, but cannot read response
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: urlEncodedData
+        });
+
+        alert("✅ ส่งข้อมูลเรียบร้อย (ไม่สามารถยืนยันผลตอบกลับได้เพราะ CORS)");
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาด", error);
+        alert("❌ ไม่สามารถส่งข้อมูลได้");
     }
-  })
-  .catch(err => {
-    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
-    console.error(err);
-  });
+}
+
 
       } catch (error) {
         console.error(error);
