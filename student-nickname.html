@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>อัปเดตชื่อเล่นนักเรียน</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input { padding: 5px; margin: 5px 0; width: 300px; }
+    button { padding: 5px 15px; background: orange; color: white; border: none; cursor: pointer; }
+  </style>
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzpiMi_AWfAatYujg1Def_ME5FGWjaBH762eOvAkGVKEvHgAe0OayN0sQeZ0sa1goKw/exec';
+
+    async function searchStudent() {
+      const idCard = document.getElementById('idCard').value.trim();
+      if (!idCard) return Swal.fire('กรุณากรอกเลขบัตรประชาชน');
+
+      try {
+        const res = await fetch(`${API_URL}?idCard=${idCard}`);
+        const data = await res.json();
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '';
+
+        if (!data || data === null || data.error) {
+          resultDiv.innerHTML = '<p style="color:red;">ไม่พบนักเรียนในระบบ</p>';
+          return;
+        }
+
+        resultDiv.innerHTML = `
+          <p>รหัสนักเรียน: <b>${data['รหัสนักเรียน']}</b></p>
+          <p>ชื่อ: ${data['ชื่อจริง']} ${data['นามสกุล']}</p>
+          <p>ชื่อเล่น: <input id="nickname" value="${data['ชื่อเล่น'] ?? ''}" placeholder="กรอกชื่อเล่นใหม่"></p>
+          <button onclick="saveNickname('${idCard}')">บันทึกชื่อเล่น</button>
+        `;
+      } catch (err) {
+        Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+      }
+    }
+
+    async function saveNickname(idCard) {
+      const nickname = document.getElementById('nickname').value.trim();
+      if (!nickname) return Swal.fire('กรุณากรอกชื่อเล่น');
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'updateNickname',
+            idCard: idCard,
+            nickname: nickname
+          })
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          Swal.fire('สำเร็จ', 'บันทึกชื่อเล่นเรียบร้อยแล้ว ✅', 'success');
+        } else {
+          Swal.fire('ไม่สำเร็จ', result.error || 'ไม่สามารถบันทึกได้', 'error');
+        }
+      } catch (err) {
+        Swal.fire('ข้อผิดพลาด', err.message, 'error');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h2>ค้นหานักเรียนด้วยเลขบัตรประชาชน</h2>
+  <input id="idCard" placeholder="กรอกเลขบัตรประชาชน">
+  <button onclick="searchStudent()">ค้นหา</button>
+  <div id="result" style="margin-top:20px;"></div>
+</body>
+</html>
