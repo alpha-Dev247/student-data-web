@@ -65,49 +65,32 @@
       }
     }
 
-    async function saveNickname() {
-      const idCard = document.getElementById('idCard').value.trim();
-      const nickname = document.getElementById('nickname').value.trim();
+  async function saveNickname() {
+  const idCard = document.getElementById('idCard').value.trim();
+  const nickname = document.getElementById('nickname').value.trim();
 
-      if (!nickname) {
-        alert("กรุณากรอกชื่อเล่นก่อนบันทึก");
-        return;
-      }
+  if (!nickname) {
+    alert("กรุณากรอกชื่อเล่นก่อนบันทึก");
+    return;
+  }
 
-      try {
-const googleAppsScriptUrl = API_URL ;
-
-async function saveFormData() {
-    const idCard = document.getElementById("idCard").value;
-    const nickname = document.getElementById("nickname").value;
-    const studentCode = document.getElementById("studentCode").value;
-
+  try {
     const urlEncodedData = new URLSearchParams();
     urlEncodedData.append("idCard", idCard);
     urlEncodedData.append("nickname", nickname);
-    urlEncodedData.append("studentCode", studentCode);
+    urlEncodedData.append("action", "updateNickname");
 
-    try {
-        await fetch(googleAppsScriptUrl, {
-            method: 'POST',
-            mode: 'no-cors', // CORS-safe, but cannot read response
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: urlEncodedData
-        });
+    await fetch(API_URL, {
+      method: 'GET', // ต้องใช้ GET ตาม Apps Script ที่รองรับไว้
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
 
-        alert("✅ ส่งข้อมูลเรียบร้อย (ไม่สามารถยืนยันผลตอบกลับได้เพราะ CORS)");
-    } catch (error) {
-        console.error("เกิดข้อผิดพลาด", error);
-        alert("❌ ไม่สามารถส่งข้อมูลได้");
-    }
+    alert("✅ บันทึกชื่อเล่นเรียบร้อย");
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาด", error);
+    alert("❌ ไม่สามารถบันทึกข้อมูลได้");
+  }
 }
-} catch (error) {
-        console.error(error);
-        document.getElementById('statusMsg').textContent = "❌ เกิดข้อผิดพลาดขณะบันทึกข้อมูล";
-      }
-    }
   </script>
 </body>
 </html>
