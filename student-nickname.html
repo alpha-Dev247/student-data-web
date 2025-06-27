@@ -83,19 +83,18 @@
       try {
         await fetch(API_URL, {
           method: 'POST',
-          mode: 'no-cors', // ✅ ป้องกัน CORS error
+          mode: 'no-cors',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           body: formData
         });
 
-        alert("✅ ส่งข้อมูลเรียบร้อย (ไม่สามารถอ่านผลลัพธ์ได้เพราะ no-cors)");
-        document.getElementById('statusMsg').textContent = "✔️ บันทึกชื่อเล่นแล้ว (แบบเงียบ)";
+        alert("✅ บันทึกชื่อเล่นแล้ว (แบบเงียบ)");
+        document.getElementById('statusMsg').textContent = "✔️ ส่งข้อมูลแล้ว";
       } catch (error) {
         console.error(error);
         alert("❌ ไม่สามารถส่งข้อมูลได้");
-        document.getElementById('statusMsg').textContent = "❌ เกิดข้อผิดพลาดขณะส่งข้อมูล";
       }
     }
   </script>
