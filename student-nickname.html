@@ -75,18 +75,27 @@
         return;
       }
 
+      const formData = new URLSearchParams();
+      formData.append('idCard', idCard);
+      formData.append('nickname', nickname);
+      formData.append('action', 'updateNickname');
+
       try {
-        const params = new URLSearchParams({
-          idCard: idCard,
-          nickname: nickname,
-          action: "updateNickname"
+        await fetch(API_URL, {
+          method: 'POST',
+          mode: 'no-cors', // ✅ ป้องกัน CORS error
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formData
         });
 
-        await fetch(`${API_URL}?${params.toString()}`);
-        document.getElementById('statusMsg').textContent = "✅ บันทึกชื่อเล่นเรียบร้อย";
+        alert("✅ ส่งข้อมูลเรียบร้อย (ไม่สามารถอ่านผลลัพธ์ได้เพราะ no-cors)");
+        document.getElementById('statusMsg').textContent = "✔️ บันทึกชื่อเล่นแล้ว (แบบเงียบ)";
       } catch (error) {
         console.error(error);
-        document.getElementById('statusMsg').textContent = "❌ ไม่สามารถบันทึกข้อมูลได้";
+        alert("❌ ไม่สามารถส่งข้อมูลได้");
+        document.getElementById('statusMsg').textContent = "❌ เกิดข้อผิดพลาดขณะส่งข้อมูล";
       }
     }
   </script>
