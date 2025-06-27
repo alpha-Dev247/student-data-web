@@ -103,7 +103,10 @@ async function saveFormData() {
         alert("❌ ไม่สามารถส่งข้อมูลได้");
     }
 }
-
+} catch (error) {
+        console.error(error);
+        document.getElementById('statusMsg').textContent = "❌ เกิดข้อผิดพลาดขณะบันทึกข้อมูล";
+      }
     }
   </script>
 </body>
