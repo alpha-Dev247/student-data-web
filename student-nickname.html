@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>ค้นหาข้อมูลนักเรียน</title>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body { font-family: sans-serif; padding: 20px; }
     input, button { margin: 5px 0; padding: 8px; width: 300px; }
     label { display: block; margin-top: 10px; }
-    #statusMsg { margin-top: 15px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -16,7 +14,7 @@
 
   <label for="idCard">เลขประจำตัวประชาชน:</label>
   <input type="text" id="idCard" placeholder="กรอกเลขบัตรประชาชน">
-  <button id="searchBtn">ค้นหา</button>
+  <button onclick="searchStudent()">ค้นหา</button>
 
   <div id="resultSection" style="display:none;">
     <label>รหัสนักเรียน:</label>
@@ -31,7 +29,7 @@
     <label>ชื่อเล่น:</label>
     <input type="text" id="nickname">
 
-    <button id="saveBtn">💾 บันทึกชื่อเล่น</button>
+    <button onclick="saveNickname()">💾 บันทึกชื่อเล่น</button>
   </div>
 
   <p id="statusMsg" style="color:green;"></p>
@@ -42,20 +40,17 @@
     async function searchStudent() {
       const idCard = document.getElementById('idCard').value.trim();
       if (!idCard) {
-        Swal.fire('กรุณากรอกเลขบัตรประชาชน', '', 'warning');
+        alert("กรุณากรอกเลขบัตรประชาชน");
         return;
       }
-
-      Swal.fire({ title: 'กำลังค้นหา...', didOpen: () => Swal.showLoading() });
 
       try {
         const res = await fetch(`${API_URL}?idCard=${idCard}`);
         const data = await res.json();
-        Swal.close();
 
         if (!data || data.error || !data['รหัสนักเรียน']) {
+          document.getElementById('statusMsg').textContent = "ไม่พบนักเรียนในระบบ";
           document.getElementById('resultSection').style.display = "none";
-          Swal.fire('ไม่พบนักเรียนในระบบ', '', 'error');
         } else {
           document.getElementById('studentCode').value = data['รหัสนักเรียน'];
           document.getElementById('firstName').value = data['ชื่อจริง'];
@@ -63,12 +58,10 @@
           document.getElementById('nickname').value = data['ชื่อเล่น'] || '';
           document.getElementById('resultSection').style.display = "block";
           document.getElementById('statusMsg').textContent = '';
-          Swal.fire('ค้นหาสำเร็จ', 'แสดงข้อมูลแล้ว', 'success');
         }
       } catch (error) {
-        Swal.close();
         console.error(error);
-        Swal.fire('เกิดข้อผิดพลาดในการเชื่อมต่อ', '', 'error');
+        document.getElementById('statusMsg').textContent = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
       }
     }
 
@@ -77,11 +70,9 @@
       const nickname = document.getElementById('nickname').value.trim();
 
       if (!nickname) {
-        Swal.fire('กรุณากรอกชื่อเล่นก่อนบันทึก', '', 'warning');
+        alert("กรุณากรอกชื่อเล่นก่อนบันทึก");
         return;
       }
-
-      Swal.fire({ title: 'กำลังบันทึก...', didOpen: () => Swal.showLoading() });
 
       try {
         const params = new URLSearchParams({
@@ -91,17 +82,14 @@
         });
 
         await fetch(`${API_URL}?${params.toString()}`);
-        Swal.fire('บันทึกสำเร็จ', 'ชื่อเล่นถูกบันทึกเรียบร้อยแล้ว', 'success');
+
+        alert("✅ บันทึกชื่อเล่นเรียบร้อย");
         document.getElementById('statusMsg').textContent = "✔️ บันทึกชื่อเล่นสำเร็จ";
       } catch (error) {
-        console.error(error);
-        Swal.fire('❌ ไม่สามารถบันทึกข้อมูลได้', '', 'error');
+        console.error("เกิดข้อผิดพลาด", error);
+        alert("❌ ไม่สามารถส่งข้อมูลได้");
       }
     }
-
-    // Event listeners
-    document.getElementById('searchBtn').addEventListener('click', searchStudent);
-    document.getElementById('saveBtn').addEventListener('click', saveNickname);
   </script>
 </body>
 </html>
