@@ -16,7 +16,7 @@
 
   <label for="idCard">เลขประจำตัวประชาชน:</label>
   <input type="text" id="idCard" placeholder="กรอกเลขบัตรประชาชน">
-  <button onclick="searchStudent()">ค้นหา</button>
+  <button id="searchBtn">ค้นหา</button>
 
   <div id="resultSection" style="display:none;">
     <label>รหัสนักเรียน:</label>
@@ -31,7 +31,7 @@
     <label>ชื่อเล่น:</label>
     <input type="text" id="nickname">
 
-    <button onclick="saveNickname()">💾 บันทึกชื่อเล่น</button>
+    <button id="saveBtn">💾 บันทึกชื่อเล่น</button>
   </div>
 
   <p id="statusMsg" style="color:green;"></p>
@@ -91,7 +91,6 @@
         });
 
         await fetch(`${API_URL}?${params.toString()}`);
-
         Swal.fire('บันทึกสำเร็จ', 'ชื่อเล่นถูกบันทึกเรียบร้อยแล้ว', 'success');
         document.getElementById('statusMsg').textContent = "✔️ บันทึกชื่อเล่นสำเร็จ";
       } catch (error) {
@@ -99,6 +98,10 @@
         Swal.fire('❌ ไม่สามารถบันทึกข้อมูลได้', '', 'error');
       }
     }
+
+    // ✅ Attach event listeners AFTER DOM is ready
+    document.getElementById('searchBtn').addEventListener('click', searchStudent);
+    document.getElementById('saveBtn').addEventListener('click', saveNickname);
   </script>
 </body>
 </html>
